@@ -1,0 +1,33 @@
+version: '3.8'
+
+services:
+  # This is your Node.js application
+  app:
+    # 'build: .' tells Docker to look for a Dockerfile in the current directory
+    # and build a custom image from it.
+    # NOTE: To use this in Portainer, you'll need to upload your code to a Git repository.
+    # We will adjust this for Portainer's web editor below.
+    build: .
+    ports:
+      # Map port 3000 on your server to port 3000 in the container
+      - '3000:3000'
+    environment:
+      - POSTGRES_USER=myuser
+      - POSTGRES_PASSWORD=mypassword
+      - POSTGRES_DB=mydb
+    depends_on:
+      - db
+
+  # This is your PostgreSQL database
+  db:
+    image: postgres:15-alpine # Use the official Postgres image
+    environment:
+      POSTGRES_USER: myuser
+      POSTGRES_PASSWORD: mypassword
+      POSTGRES_DB: mydb
+    volumes:
+      # This saves your database data even if the container is removed
+      - postgres-data:/var/lib/postgresql/data
+
+volumes:
+  postgres-data:
